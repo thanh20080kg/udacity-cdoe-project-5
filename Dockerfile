@@ -1,4 +1,4 @@
-FROM python:3.9
+FROM python:3.10
 
 ## Step 1:
 # Create a working directory
@@ -15,8 +15,8 @@ RUN pip install --upgrade pip &&\
     pip install --trusted-host pypi.python.org -r requirements.txt
 
 ## Step 4:
-# Expose port 80
-EXPOSE 5000
+# Expose port 2795
+EXPOSE 2795
 
 ## Step 5:
 # Run app.py at container launch

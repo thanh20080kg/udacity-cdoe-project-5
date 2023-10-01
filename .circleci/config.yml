@@ -7,7 +7,7 @@ orbs:
 jobs:
   lint:
     docker:
-      - image: circleci/python:3.7.3-stretch
+      - image: python:3.10
     working_directory: ~/repo
     steps:
       - checkout
@@ -21,8 +21,6 @@ jobs:
             python3 -m venv ~/.devops
             source ~/.devops/bin/activate
             make install
-            # Install hadolint
-
       - save_cache:
           paths:
             - ./venv
@@ -30,7 +28,7 @@ jobs:
       - run:
           name: run lint
           command: |
-            . venv/bin/activate
+            source ~/.devops/bin/activate
             make lint
   build:
     docker:
@@ -40,12 +38,12 @@ jobs:
         description: |
           Name of the EKS cluster
         type: string
-        default: "CapstoneEKS-0J5F5Y6TBD53"
+        default: "CapstoneEKS-aaFZzRnaPQgD"
       aws-region:
         description: |
           AWS region
         type: string
-        default: "us-east-1"
+        default: us-east-1
     steps:
       - checkout
       - setup_remote_docker:
@@ -72,21 +70,21 @@ jobs:
           name: Load Docker image layer cache
           command: |
             set +o pipefail
-            docker load -i caches/ml-classification.tar | true
+            docker load -i caches/ml-capstone.tar | true
       - run:
           name: Build application Docker image
-          command: docker build --cache-from=ml-classification -t ml-classification .
+          command: docker build --cache-from=ml-capstone -t ml-capstone .
       - run:
           name: Save Docker image layer cache
           command: |
             chmod -R 777 ../
             mkdir -p caches
-            docker save -o caches/ml-classification.tar ml-classification
+            docker save -o caches/ml-capstone.tar ml-capstone
       - run:
           name: Push Docker Image
           command: |
-            docker tag ml-classification tuancnh/ml-classification
-            docker push tuancnh/ml-classification
+            docker tag ml-capstone shironguyen/ml-capstone
+            docker push shironguyen/ml-capstone
   deploy:
     docker:
       - image: cimg/python:3.11.4
@@ -95,12 +93,12 @@ jobs:
         description: |
           Name of the EKS cluster
         type: string
-        default: "CapstoneEKS-Z3X8vyI1ufDY"
+        default: "CapstoneEKS-aaFZzRnaPQgD"
       aws-region:
         description: |
           AWS region
         type: string
-        default: "us-east-1"
+        default: us-east-1
     steps:
       - checkout
       - setup_remote_docker:
@@ -117,7 +115,7 @@ jobs:
           install-kubectl: true
       - kubernetes/create-or-update-resource:
           resource-file-path: ./kubernetes/deployment.yml
-          resource-name: deployment/ml-classification
+          resource-name: deployment/ml-capstone
           get-rollout-status: true
           show-kubectl-command: true
       - kubernetes/create-or-update-resource:
@@ -140,12 +138,12 @@ workflows:
     jobs:
       - lint
       - build:
-          cluster-name: CapstoneEKS-Z3X8vyI1ufDY
+          cluster-name: "CapstoneEKS-aaFZzRnaPQgD"
           aws-region: $AWS_DEFAULT_REGION
           requires:
-            - "lint"
+            - lint
       - deploy:
-          cluster-name: CapstoneEKS-Z3X8vyI1ufDY
+          cluster-name: "CapstoneEKS-aaFZzRnaPQgD"
           aws-region: $AWS_DEFAULT_REGION
           requires:
-            - "build"
+            - build

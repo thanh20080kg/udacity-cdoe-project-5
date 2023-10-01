@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ml-classification
+  name: ml-capstone
   labels:
-    app: ml-classification
+    app: ml-capstone
   namespace: default
 spec:
   progressDeadlineSeconds: 3600
   replicas: 3
   selector:
     matchLabels:
-      app: ml-classification
+      app: ml-capstone
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -19,14 +19,14 @@ spec:
   template:
     metadata:
       labels:
-        app: ml-classification
+        app: ml-capstone
     spec:
       containers:
-        - image: tuancnh/ml-classification:latest
+        - image: shironguyen/ml-capstone:latest
           imagePullPolicy: Always
-          name: ml-classification
+          name: ml-capstone
           ports:
-            - containerPort: 5000
+            - containerPort: 2795
           resources:
             requests:
               memory: "128Mi"
@@ -39,15 +39,15 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: ml-classification
+  name: ml-capstone
   labels:
-    app: ml-classification
+    app: ml-capstone
 spec:
   type: LoadBalancer
   selector:
-    app: ml-classification
+    app: ml-capstone
   ports:
-    - port: 5000
-      targetPort: 5000
+    - port: 2795
+      targetPort: 2795
       nodePort: 30000
       protocol: TCP

@@ -2,7 +2,7 @@ Description: >
   Capstone project for Cloud DevOps Engineering Nanodegree
 
 Parameters:
-  EnvironmentName:
+  ProjectName:
     Description: An Environment name that will be prefixed to resources
     Type: String
 
@@ -28,8 +28,8 @@ Resources:
               - sts:AssumeRole
       Path: "/"
       ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
         - arn:aws:iam::aws:policy/AmazonEKSServicePolicy
+        - arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
         - arn:aws:iam::aws:policy/ElasticLoadBalancingFullAccess
 
   CapstoneEKS:
@@ -39,21 +39,21 @@ Resources:
       RoleArn: !GetAtt ClusterRole.Arn
       ResourcesVpcConfig:
         SecurityGroupIds:
-          - Fn::ImportValue: !Sub "${EnvironmentName}-SCG"
+          - Fn::ImportValue: !Sub "${ProjectName}-SCG"
         SubnetIds:
           Fn::Split:
             - ","
             - Fn::ImportValue:
-                Fn::Sub: ${EnvironmentName}-PUB-NETS
+                Fn::Sub: ${ProjectName}-PUB-NETS
 Outputs:
   EksId:
     Description: The EKS id.
     Value: !Ref CapstoneEKS
     Export:
-      Name: !Sub ${EnvironmentName}-EKS
+      Name: !Sub ${ProjectName}-EKS
 
   EKSRoleArn:
     Description: The role that Amazon EKS will use to create AWS resources for Kubernetes clusters
     Value: !GetAtt ClusterRole.Arn
     Export:
-      Name: !Sub "${EnvironmentName}-EKSRoleArn"
+      Name: !Sub "${ProjectName}-EKSRoleArn"

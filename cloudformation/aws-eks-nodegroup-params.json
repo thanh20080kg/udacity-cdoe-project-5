@@ -1,11 +1,11 @@
 [
   {
-    "ParameterKey": "EnvironmentName",
-    "ParameterValue": "CapstoneProject"
+    "ParameterKey": "ProjectName",
+    "ParameterValue": "Capstone-Project"
   },
   {
     "ParameterKey": "KeyPairName",
-    "ParameterValue": "ec2-deployment"
+    "ParameterValue": "ec2-capstone"
   },
   {
     "ParameterKey": "DesiredInstances",
@@ -13,7 +13,7 @@
   },
   {
     "ParameterKey": "ImageID",
-    "ParameterValue": "ami-00c698c24ede5b160"
+    "ParameterValue": "ami-053b0d53c279acc90"
   },
   {
     "ParameterKey": "MinSize",

@@ -4,7 +4,7 @@
 
 # Step 1:
 # Build image and add a descriptive tag
-docker build -t ml-classification .
+docker build -t ml-capstone .
 
 # Step 2:
 # List docker images
@@ -12,4 +12,4 @@ docker images
 
 # Step 3:
 # Run app
-docker run -p 5000:5000 ml-classification
+docker run -p 2795:2795 ml-capstone

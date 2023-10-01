@@ -5,14 +5,14 @@
 
 # Step 1:
 # Create dockerpath
-dockerpath="tuancnh/ml-classification"
+dockerpath="shironguyen/ml-capstone"
 
 
 # Step 2:
 # Authenticate & tag
 echo "Docker ID and Image: $dockerpath"
 # docker login --username phamanhtuan221995
-docker image tag ml-classification $dockerpath
+docker image tag ml-capstone $dockerpath
 
 # Step 3:
 # Push image to a docker repository
