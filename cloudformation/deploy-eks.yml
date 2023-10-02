@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: >
-  Nguyen Hai Dang - Udacity Capstone Project
+  ShiroNguyen - Udacity Capstone Project
 Parameters:
   EnvironmentName:
     Description: EnvironmentName Project Capstone

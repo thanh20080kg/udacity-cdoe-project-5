@@ -5,11 +5,13 @@
 ## Badges
 
 ### CircleCI Status
+
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/tuancat/project-capstone-udacity/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/tuancat/project-capstone-udacity/tree/main)
 
 # Udacity Capstone Project
 
-In this project you will apply the skills and knowledge which were developed throughout the Cloud DevOps Nanodegree program. These include:
+In this project you will apply the skills and knowledge which were developed throughout the Cloud DevOps Nanodegree
+program. These include:
 
 * Working in AWS
 * Using Circle CI to implement Continuous Integration and Continuous Deployment
@@ -59,21 +61,23 @@ To run this project, you will need to add the following environment variables to
 | `scripts/upload-docker.sh` | Shell script for uploading docker image to dockerhub repository |
 
 ## Run Steps For Cloud Deployment
+
 * Create a DockerHub public repository
 * Run chmod 700 for each Shell scrip in `./scripts` folder
-* Run `./create-stack.sh Capstone network.yml network-params.json` to create VPC infrastructure
-* Run `./create-stack.sh Capstone-EKS eks-cluster.yml eks-cluster-params.json` to create EKS cluster
-* Run `./create-stack.sh Capstone-NodeGroup aws-eks-nodegroup.yml aws-eks-nodegroup-params.json` to create EKS nodes group
+* Run `./create-stack.sh capstone network.yml network-params.json` to create VPC infrastructure
+* Run `./create-stack.sh capstoneEKS eks-cluster.yml eks-cluster-params.json` to create EKS cluster
+* Run `./create-stack.sh capstoneNodeGroup aws-eks-nodegroup.yml aws-eks-nodegroup-params.json` to create EKS nodes group
 * Run `aws eks list-clusters --profile udacity` to see output like below
 * Configure CircleCI project for the github repository
 * Done!
 
 * Some kubectl commands to check k8s resources
+
 ```bash
     # Fet k8s configs
-    aws eks --region us-east-1 update-kubeconfig --name capstone-project
+    aws eks update-kubeconfig --region us-east-1 --name capstone-final
     # Switch context
-    kubectl config use-context arn:aws:eks:us-east-1:006808541377:cluster/capstone-project
+    kubectl config use-context arn:aws:eks:us-east-1:006808541377:cluster/capstone-final
     # Manually apply k8s resource
     kubectl apply -f aws-authen-cm.yml
     # See ndoes in cluster
@@ -84,8 +88,7 @@ To run this project, you will need to add the following environment variables to
     kubectl get services
     # View logs of a pod (when checking incoming request)
     kubectl logs <POD_NAME>
-     aws cloudformation deploy --template-file deploy-eks.yml --stack-name capstone-project --capabilities CAPABILITY_NAMED_IAM
-
+    aws cloudformation deploy --template-file deploy-eks.yml --stack-name capstone-final --capabilities CAPABILITY_NAMED_IAM
 
 ```
 
