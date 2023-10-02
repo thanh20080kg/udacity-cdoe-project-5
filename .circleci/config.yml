@@ -16,10 +16,13 @@ jobs:
             - v1-dependencies-{{ checksum "requirements.txt" }}
             - v1-dependencies-
       - run:
+          name: Setup dependencies
+          command: |
+            make setup
+            source ~/.devops/bin/activate
+      - run:
           name: Install python dependencies
           command: |
-            sudo apt install python3.7-venv
-            python3 -m venv ~/.devops
             source ~/.devops/bin/activate
             make install
       - save_cache:
@@ -33,7 +36,7 @@ jobs:
             make lint
   build:
     docker:
-      - image: cimg/python:3.11.4
+      - image: circleci/python:3.7.3-stretch
     parameters:
       cluster-name:
         description: |
