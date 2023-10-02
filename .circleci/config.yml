@@ -85,20 +85,11 @@ jobs:
           command: |
             docker tag ml-capstone shironguyen/ml-capstone
             docker push shironguyen/ml-capstone
+
   deploy:
     docker:
       - image: cimg/python:3.11.4
-    parameters:
-      cluster-name:
-        description: |
-          Name of the EKS cluster
-        type: string
-        default: CapstoneEKS-aaFZzRnaPQgD
-      aws-region:
-        description: |
-          AWS region
-        type: string
-        default: us-east-1
+    working_directory: ~/repo
     steps:
       - checkout
       - setup_remote_docker:
@@ -108,23 +99,37 @@ jobs:
           name: Install dependencies
           command: |
             sudo apt install -y tar gzip curl
-      - kubernetes/install-kubectl
-      - aws-eks/update-kubeconfig-with-authenticator:
-          cluster-name: << parameters.cluster-name >>
-          aws-region: << parameters.aws-region >>
-          install-kubectl: true
-      - kubernetes/create-or-update-resource:
-          resource-file-path: ./kubernetes/aws-authen-cm.yml
-          resource-name: configmap/aws-auth
-      - kubernetes/create-or-update-resource:
-          resource-file-path: ./kubernetes/deployment.yml
-          resource-name: deployment/ml-capstone
-          get-rollout-status: true
-          show-kubectl-command: true
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install
+      - run:
+          name: Install kubectl
+          command: |
+            curl -k -LO "https://dl.k8s.io/release/v1.24.7/bin/linux/amd64/kubectl"
+            curl -k -LO "https://dl.k8s.io/v1.24.7/bin/linux/amd64/kubectl.sha256"
+            echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
+            sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+      #            chmod +x /usr/local/bin/kubectl
+      - run:
+          name: Configure AWS CLI
+          command: |
+            aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+            aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+            aws configure set default.region us-east-1
+            aws eks update-kubeconfig --name CapstoneEKS-aaFZzRnaPQgD
+            kubectl cluster-info
+            kubectl get all -n kube-system
+      - run:
+          name: Deployment configmap to eks
+          command: |
+            kubectl apply -f ./kubernetes/aws-authen-cm.yml
+      - run:
+          name: Deploytment app to eks
+          command: |
+            kubectl apply -f ./kubernetes/deployment.yaml
       - run:
           name: Test cluster
           command: |
-            sleep 300
             kubectl get nodes
             kubectl get deployment
             kubectl get pod -o wide
