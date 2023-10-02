@@ -136,7 +136,7 @@ jobs:
       - run:
           name: Deploytment app to eks
           command: |
-            kubectl apply -f ./kubernetes/deployment.yaml
+            kubectl apply -f ./kubernetes/deployment.yml
       - run:
           name: Test cluster
           command: |
