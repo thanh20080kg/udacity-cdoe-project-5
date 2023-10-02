@@ -48,7 +48,7 @@ Resources:
 Outputs:
   EksId:
     Description: The EKS id.
-    Value: !Ref CapstoneEKS
+    Value: !Ref Capstone-EKS
     Export:
       Name: !Sub ${ProjectName}-EKS
 

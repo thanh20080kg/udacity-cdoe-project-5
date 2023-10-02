@@ -40,13 +40,14 @@ Parameters:
   AMItoUse:
     Description: AMI to use for our base image
     Type: String
-    Default: ami-053b0d53c279acc90
+    Default: ami-08581e2e50ad52e16
   KeyPairName:
     Description: KeyPair for EC2
     Type: String
     Default: ec2-capstone
 
 Resources:
+
   VPC:
     Type: AWS::EC2::VPC
     Properties:
@@ -488,6 +489,8 @@ Resources:
           /etc/eks/bootstrap.sh ${ControlPlane}
           /opt/aws/bin/cfn-signal --exit-code $? --stack  ${AWS::StackName} --resource WorkerNodegroup --region ${AWS::Region}
 
+
+############################Output############################
 Outputs:
   VpcId:
     Value: !Ref VPC

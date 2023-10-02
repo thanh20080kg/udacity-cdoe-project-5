@@ -65,7 +65,7 @@ To run this project, you will need to add the following environment variables to
 * Create a DockerHub public repository
 * Run chmod 700 for each Shell scrip in `./scripts` folder
 * Run `./create-stack.sh capstone network.yml network-params.json` to create VPC infrastructure
-* Run `./create-stack.sh capstoneEKS eks-cluster.yml eks-cluster-params.json` to create EKS cluster
+* Run `./create-stack.sh Capstone-EKS eks-cluster.yml eks-cluster-params.json` to create EKS cluster
 * Run `./create-stack.sh capstoneNodeGroup aws-eks-nodegroup.yml aws-eks-nodegroup-params.json` to create EKS nodes group
 * Run `aws eks list-clusters --profile udacity` to see output like below
 * Configure CircleCI project for the github repository
@@ -88,7 +88,7 @@ To run this project, you will need to add the following environment variables to
     kubectl get services
     # View logs of a pod (when checking incoming request)
     kubectl logs <POD_NAME>
-    aws cloudformation deploy --template-file deploy-eks.yml --stack-name capstone-final --capabilities CAPABILITY_NAMED_IAM
+    aws cloudformation deploy --template-file deploy-eks.yml --stack-name Capstone-EKS --capabilities CAPABILITY_NAMED_IAM
 
 ```
 

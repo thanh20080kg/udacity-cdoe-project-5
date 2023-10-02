@@ -16,12 +16,11 @@ jobs:
             - v1-dependencies-{{ checksum "requirements.txt" }}
             - v1-dependencies-
       - run:
-          name: Setup dependencies
+          name: Setup
           command: |
             make setup
-            source ~/.devops/bin/activate
       - run:
-          name: Install python dependencies
+          name: Install dependencies
           command: |
             source ~/.devops/bin/activate
             make install
@@ -29,6 +28,11 @@ jobs:
           paths:
             - ./venv
           key: v1-dependencies-{{ checksum "requirements.txt" }}
+      - run:
+          name: run tests
+          command: |
+            source ~/.devops/bin/activate
+            make test
       - run:
           name: run lint
           command: |
@@ -42,7 +46,7 @@ jobs:
         description: |
           Name of the EKS cluster
         type: string
-        default: capstone-final
+        default: "Capstone-EKS"
       aws-region:
         description: |
           AWS region
@@ -71,25 +75,16 @@ jobs:
           command: |
             docker login -u "$DOCKER_HUB_USERNAME" -p $(echo "$DOCKER_HUB_PASSWORD")
       - run:
-          name: Load Docker image layer cache
-          command: |
-            set +o pipefail
-            docker load -i caches/ml-capstone.tar | true
+          name: Build image from Dockerfile
+          command: docker build --tag=ml-capstone .
       - run:
-          name: Build application Docker image
-          command: docker build --cache-from=ml-capstone -t ml-capstone .
-      - run:
-          name: Save Docker image layer cache
+          name: Tag docker to Push image to github
           command: |
-            chmod -R 777 ../
-            mkdir -p caches
-            docker save -o caches/ml-capstone.tar ml-capstone
+            docker tag ml-capstone shironguyen/ml-capstone
       - run:
           name: Push Docker Image
           command: |
-            docker tag ml-capstone shironguyen/ml-capstone
             docker push shironguyen/ml-capstone
-
   deploy:
     docker:
       - image: circleci/python:3.7.3-stretch
@@ -113,14 +108,13 @@ jobs:
             curl -k -LO "https://dl.k8s.io/v1.24.7/bin/linux/amd64/kubectl.sha256"
             echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
             sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-      #            chmod +x /usr/local/bin/kubectl
       - run:
           name: Configure AWS CLI
           command: |
             aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
             aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
             aws configure set default.region us-east-1
-            aws eks update-kubeconfig --name capstone-final
+            aws eks update-kubeconfig --name Capstone-EKS
             kubectl cluster-info
             kubectl get all -n kube-system
       - run:
@@ -148,7 +142,7 @@ workflows:
     jobs:
       - lint
       - build:
-          cluster-name: capstone-eks
+          cluster-name: Capstone-EKS
           aws-region: $AWS_DEFAULT_REGION
           filters:
             branches:
@@ -157,7 +151,7 @@ workflows:
           requires:
             - "lint"
       - deploy:
-          requires: [ build ]
+          requires: [build]
           filters:
             branches:
               only:
