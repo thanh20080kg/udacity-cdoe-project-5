@@ -71,9 +71,9 @@ To run this project, you will need to add the following environment variables to
 * Some kubectl commands to check k8s resources
 ```bash
     # Fet k8s configs
-    aws eks --region us-east-1 update-kubeconfig --name CapstoneEKS-Z3X8vyI1ufDY
+    aws eks --region us-east-1 update-kubeconfig --name capstone-project
     # Switch context
-    kubectl config use-context arn:aws:eks:us-east-1:988918897812:cluster/CapstoneEKS-ZIuUrjFd62pq
+    kubectl config use-context arn:aws:eks:us-east-1:006808541377:cluster/capstone-project
     # Manually apply k8s resource
     kubectl apply -f aws-authen-cm.yml
     # See ndoes in cluster
@@ -84,6 +84,9 @@ To run this project, you will need to add the following environment variables to
     kubectl get services
     # View logs of a pod (when checking incoming request)
     kubectl logs <POD_NAME>
+     aws cloudformation deploy --template-file deploy-eks.yml --stack-name capstone-project --capabilities CAPABILITY_NAMED_IAM
+
+
 ```
 
 Remember to replace names of DockerHub repository & cluster name to the script file before you run.
